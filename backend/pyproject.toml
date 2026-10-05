@@ -1,0 +1,33 @@
+[project]
+name = "bankops-ai-command-center"
+version = "1.0.0"
+description = "BankOps AI Command Center backend (SYNTHETIC DEMO)"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 145
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE", "SIM", "RUF"]
+ignore = ["S101", "S105", "S106", "B008", "RUF001", "RUF002", "RUF003", "RUF007", "RUF012", "SIM105", "SIM108",
+          "S608", "UP040", "UP046", "S311", "B007"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B", "BLE", "E501"]
+"app/rag/text.py" = ["E501"]
+"app/seed/data.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+warn_unused_ignores = false
+check_untyped_defs = false
+disallow_untyped_defs = false
+exclude = ["alembic/versions", "tests"]

@@ -1,0 +1,9 @@
+# Transitive dependency pins (supply-chain hygiene): each pinned to the newest
+# release published >= 7 days before 2026-09-27. Verify with:
+#   python scripts/check_dependency_age.py --days 7
+starlette==1.6.0
+Mako==1.4.1
+langgraph-sdk==0.4.4
+langsmith==0.13.0
+httpx2==2.13.0
+httpcore2==2.13.0

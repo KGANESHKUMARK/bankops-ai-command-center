@@ -1,0 +1,59 @@
+# BankOps AI Command Center — Docker Compose
+# SYNTHETIC DEMO ONLY. Uses PostgreSQL + pgvector for production-like setup.
+# For local development without Docker, see the README.
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: bankops
+      POSTGRES_USER: bankops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bankops_dev_only}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bankops -d bankops"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://bankops:${POSTGRES_PASSWORD:-bankops_dev_only}@db:5432/bankops
+      VECTOR_BACKEND: pgvector
+      EMBEDDING_PROVIDER: mock
+      MODEL_PROVIDER: mock
+      DEMO_MODE: "true"
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-BankOpsDemo!2026}
+      CORS_ALLOWED_ORIGINS: "http://localhost,http://127.0.0.1,http://localhost:80"
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev_only_secret_change_in_production}
+      LOG_LEVEL: INFO
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/app/data
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m app.cli seed &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  pgdata:
+  backend_data:

@@ -1,0 +1,20 @@
+# BankOps AI Command Center - backend runtime dependencies.
+# Pinned exact versions (each published >= 7 days before pinning, 2026-09-27).
+-c constraints.txt
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+SQLAlchemy==2.0.54
+alembic==1.20.0
+langgraph==1.2.11
+langchain-core==1.6.3
+httpx==0.28.1
+PyJWT==2.14.0
+argon2-cffi==25.1.0
+pypdf==6.19.0
+python-multipart==0.0.32
+numpy==2.5.3
+# PostgreSQL + pgvector (used when DATABASE_URL points at PostgreSQL)
+psycopg[binary]==3.3.6
+pgvector==0.5.0
